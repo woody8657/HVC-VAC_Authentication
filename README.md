@@ -43,4 +43,6 @@ python HVC-VAC.py -f fingerprint.png -s signature.png -m messages -o outputs -sh
 ## References
 
 [[1]](https://ieeexplore.ieee.org/document/4106475) E. Myodo, S. Sakazawa and Y. Takishima, "Visual Cryptography Based on Void-And-Cluster Halftoning Technique," 2006 International Conference on Image Processing, Atlanta, GA, 2006, pp. 97-100.
+
+
 [[2]](http://cv.ulichney.com/papers/1993-void-cluster.pdf) Robert A. Ulichney "Void-and-cluster method for dither array generation", Proc. SPIE 1913, Human Vision, Visual Processing, and Digital Display IV, (8 September 1993)
