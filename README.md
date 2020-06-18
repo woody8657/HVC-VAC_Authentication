@@ -10,13 +10,13 @@ Here we implement the HVC-VAC algorithm proposed in [1]. We also proposed a auth
 ## How to run
 
 ```
-python VAC.py -f FINGERPRINT -s SIGNATURE -m MESSAGE -o OUTPUT
-              [-sh SHAPE SHAPE] [-r RESAMPLE_RANGE RESAMPLE_RANGE]
-              [-v VERBOSE]
+python HVC-VAC.py [-h] -f FINGERPRINT -s SIGNATURE -m MESSAGE -o OUTPUT
+                  [-sh SHAPE SHAPE] [-r RESAMPLE_RANGE RESAMPLE_RANGE]
+                  [-v VERBOSE]
     -f FINGERPRINT, --fingerprint FINGERPRINT
                         fingerprint image path
     -s SIGNATURE, --signature SIGNATURE
-                        fingerprint image path
+                        signature image path
     -m MESSAGE, --message MESSAGE
                         message image directory
     -o OUTPUT, --output OUTPUT
@@ -26,12 +26,17 @@ python VAC.py -f FINGERPRINT -s SIGNATURE -m MESSAGE -o OUTPUT
     -r RESAMPLE_RANGE RESAMPLE_RANGE, --resample_range RESAMPLE_RANGE RESAMPLE_RANGE
                         range for resampling shared images
     -v VERBOSE, --verbose VERBOSE
+                        verbosity
 ```
 
 
-example
+examples
 ```
-python HVC-VAC.py -f fingerprint.png -s signature.png -m messages -o outputs -sh 200 200 -r 0.35 0.65 -v 1
+# HVC-VAC algorithm
+python HVC-VAC.py -f ./HVC-VAC_test/inputs/secret_image.jpg -s ./HVC-VAC_test/inputs/cat.jpg -m ./HVC-VAC_test/inputs/dog -o ./HVC-VAC_test/outputs -sh 200 200 -r 0.20 0.80 -v 1
+
+# Our authentication scheme
+python HVC-VAC.py -f ./Authentication_test/inputs/fingerprint.png -s ./Authentication_test/inputs/signature.png -m ./Authentication_test/inputs/messages -o ./Authentication_test/outputs -sh 200 200 -r 0.35 0.65 -v 1
 ```
 
 ## Built With

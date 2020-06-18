@@ -29,11 +29,14 @@ class clock():
     def get_time(self):
         return self.et - self.st
 
-def read_image(path, resize=None):
+def read_image(path, resize=None, binary=False):
     if not path: return None
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     if resize: img = cv2.resize(img, (resize[1], resize[0]))
     img = img / 255.
+    if binary:
+        img[img > 0.5] = 1.0
+        img[img <= 0.5] = 0.0
     return img
 
 def save_image(path, img):
@@ -228,7 +231,7 @@ class HVC_VAC():
         dither_matrix_2 = self.vac_operation_2(1)
         self.TAs = [dither_matrix_1, dither_matrix_2]
         timer.tock()
-        if self.verbose: print("INFO: Step2 done, time: %.5fs" % timer.get_time())
+        if self.verbose: print("INFO: Step 2 done, time: %.5fs" % timer.get_time())
 
     def vac_operation_2(self, index):
         # dither matrix generation
@@ -274,7 +277,7 @@ if __name__ == "__main__":
     args = get_args()
 
     # Load images
-    fingerprint = read_image(args.fingerprint, resize=args.shape)
+    fingerprint = read_image(args.fingerprint, resize=args.shape, binary=True)
     signature = read_image(args.signature, resize=args.shape)
     messages = glob.glob(os.path.join(args.message, '*'))
     messages = [read_image(p, resize=args.shape) for p in messages]
