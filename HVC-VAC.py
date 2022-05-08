@@ -3,6 +3,7 @@ import cv2
 import time
 import glob
 import argparse
+from matplotlib.cbook import flatten
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import convolve2d as convolution
@@ -51,8 +52,11 @@ def show_image(img, title=None):
 
 def decode_shares(share1, share2):
     # We use XNOR for decoding rather than simple adding
-    # We would then have some good properties for our authentication scheme
-    decode = np.logical_not(np.logical_xor(share1, share2)).astype(float)
+    # We would the
+    decode = share1 + share2
+    decode[decode>=1] = 1
+    decode = 1 - decode
+    # decode = np.logical_not(np.logical_xor(share1, share2)).astype(float)
     return decode
 
 class HVC_VAC():
@@ -114,15 +118,18 @@ class HVC_VAC():
         
         # Select white region
         W_1 = np.random.choice(flat_mask, size=self.w_size//2, replace=False, p=self.w_mask.flatten()/np.sum(self.w_mask))
-        W_0_p = self.w_mask.flatten()
-        W_0_p[W_1] = 0.0
-        W_0 = np.random.choice(flat_mask, size=self.w_size//2, replace=False, p=W_0_p / np.sum(W_0_p))
+        # W_0_p = self.w_mask.flatten()
+        # W_0_p[W_1] = 0.0
+        # W_0 = np.random.choice(flat_mask, size=self.w_size//2, replace=False, p=W_0_p / np.sum(W_0_p))
+        W_0 = np.array(list(set(np.where(self.w_mask.flatten()==True)[0])-set(W_1)))
         
+
         # Select black region
         B_1 = np.random.choice(flat_mask, size=self.b_size//2, replace=False, p=self.b_mask.flatten()/np.sum(self.b_mask))
-        B_0_p = self.b_mask.flatten()
-        B_0_p[B_1] = 0.0
-        B_0 = np.random.choice(flat_mask, size=self.b_size//2, replace=False, p=B_0_p / np.sum(B_0_p))
+        # B_0_p = self.b_mask.flatten()
+        # B_0_p[B_1] = 0.0
+        # B_0 = np.random.choice(flat_mask, size=self.b_size//2, replace=False, p=B_0_p / np.sum(B_0_p))
+        B_0 = np.array(list(set(np.where(self.b_mask.flatten()==True)[0])-set(B_1)))
         
         # Get Rp1 & RP2
         RP1 = np.zeros(self.secret.flatten().shape)
@@ -138,7 +145,7 @@ class HVC_VAC():
         RP1[B_1] = 1
         RP2[B_1] = 0
         self.RPs = [np.reshape(RP1, self.secret.shape), np.reshape(RP2, self.secret.shape)]
-        
+        cv2.imwrite('d.png', decode_shares(self.RPs[0],self.RPs[1])*255)
         cluster_score_1 = self._get_score(self.RPs[0], 'cluster')
         cluster_score_2 = self._get_score(self.RPs[1], 'cluster')
         self.cluster_scores = [cluster_score_1, cluster_score_2]
