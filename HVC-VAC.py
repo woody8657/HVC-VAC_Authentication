@@ -54,8 +54,8 @@ def decode_shares(share1, share2):
     # We use XNOR for decoding rather than simple adding
     # We would the
     decode = share1 + share2
-    decode[decode>=1] = 1
-    decode = 1 - decode
+    decode[decode==1] = 0
+    decode[decode==2] = 1
     # decode = np.logical_not(np.logical_xor(share1, share2)).astype(float)
     return decode
 
