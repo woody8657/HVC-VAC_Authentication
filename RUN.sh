@@ -4,5 +4,5 @@ python main.py \
     -m ./coco_test/inputs/000000009400.jpg \
     -o ./coco_test/outputs \
     -sh 500 500 \
-    -r 0.2 0.8 \
+    -r 0.25 0.75 \
     -v 1
