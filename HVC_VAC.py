@@ -92,6 +92,7 @@ class HVC_VAC():
         cv2.imwrite('b.png', self.RPs[0]*255)
         cv2.imwrite('c.png', self.RPs[1]*255)
         cv2.imwrite('d.png', decode_shares(self.RPs[0],self.RPs[1])*255)
+    
         cluster_score_1 = self._get_score(self.RPs[0], 'cluster')
         cluster_score_2 = self._get_score(self.RPs[1], 'cluster')
         self.cluster_scores = [cluster_score_1, cluster_score_2]
