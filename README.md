@@ -4,6 +4,7 @@ A halftone visual cryptography based on void-and-cluster dithering
 ## Description
 
 ![](./figures/algorithm.jpg)
+![](./figures/demo.gif)
 
 Here we implement the HVC-VAC algorithm proposed in [1]. We also proposed a authentication scheme based on the HVC-VAC algorithm. Check out the notebook for more details.
 
@@ -18,7 +19,7 @@ python main.py [-h] -f FINGERPRINT -s SIGNATURE -m MESSAGE -o OUTPUT
     -s SIGNATURE, --signature SIGNATURE
                         signature image path
     -m MESSAGE, --message MESSAGE
-                        message image directory
+                        message image path
     -o OUTPUT, --output OUTPUT
                         output images directory
     -sh SHAPE SHAPE, --shape SHAPE SHAPE
