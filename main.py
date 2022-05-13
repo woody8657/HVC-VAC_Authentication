@@ -35,9 +35,9 @@ def whole_process(args):
     ht_fingerprints = [decode_shares(ht_signature, m) for m in ht_messages]
 
     # Save images
-    save_image(os.path.join(args.output, 'signature.png'), ht_signature)
-    [save_image(os.path.join(args.output, 'message_%d.png' % i), ht_messages[i]) for i in range(messages_num)]
-    [save_image(os.path.join(args.output, 'fingerprint_%d.png' % i), ht_fingerprints[i]) for i in range(messages_num)]
+    save_image(os.path.join(args.output, 'share1.png'), ht_signature)
+    [save_image(os.path.join(args.output, 'share2%d.png' % i), ht_messages[i]) for i in range(messages_num)]
+    [save_image(os.path.join(args.output, 'decode_%d.png' % i), ht_fingerprints[i]) for i in range(messages_num)]
 
     # Check if signatures are identical
     signatures = [decode_shares(ht_messages[i], ht_fingerprints[i]) for i in range(messages_num)]
