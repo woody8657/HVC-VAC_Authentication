@@ -19,7 +19,7 @@ python main.py [-h] -f FINGERPRINT -s SIGNATURE -m MESSAGE -o OUTPUT
     -s SIGNATURE, --signature SIGNATURE
                         signature image path
     -m MESSAGE, --message MESSAGE
-                        message image directory
+                        message image path
     -o OUTPUT, --output OUTPUT
                         output images directory
     -sh SHAPE SHAPE, --shape SHAPE SHAPE
