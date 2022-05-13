@@ -1,63 +1,8 @@
-import os
-import cv2
-import time
-import glob
-import argparse
-from matplotlib.cbook import flatten
 import numpy as np
-import matplotlib.pyplot as plt
+import cv2
+from utils import *
 from scipy.signal import convolve2d as convolution
-
-def get_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-f", "--fingerprint", type=str, help="fingerprint image path", required=True)
-    parser.add_argument("-s", "--signature", type=str, help="fingerprint image path", required=True)
-    parser.add_argument("-m", "--message", type=str, help="message image directory", required=True)
-    parser.add_argument("-o", "--output", type=str, help="output images directory", required=True)
-    parser.add_argument("-sh", "--shape", type=int, nargs=2, help="output image shape", default=None)
-    parser.add_argument("-r", "--resample_range", type=float, nargs=2, help="range for resampling shared images", default=[0.35, 0.65])
-    parser.add_argument("-v", "--verbose", type=int, help="verbosity", default=0)
-    args_ = parser.parse_args()
-    return args_
-
-class clock():
-    def tick(self):
-        self.st = time.time()
-    
-    def tock(self):
-        self.et = time.time()
-        
-    def get_time(self):
-        return self.et - self.st
-
-def read_image(path, resize=None, binary=False):
-    if not path: return None
-    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-    if resize: img = cv2.resize(img, (resize[1], resize[0]))
-    img = img / 255.
-    if binary:
-        img[img > 0.5] = 1.0
-        img[img <= 0.5] = 0.0
-    return img
-
-def save_image(path, img):
-    if np.max(img) <= 1.0: img = img * 255.
-    cv2.imwrite(path, img)
-
-def show_image(img, title=None):
-    plt.figure()
-    if title: plt.title(title)
-    plt.imshow(img, cmap='gray')
-    plt.show()
-
-def decode_shares(share1, share2):
-    # We use XNOR for decoding rather than simple adding
-    # We would the
-    decode = share1 + share2
-    decode[decode==1] = 0
-    decode[decode==2] = 1
-    # decode = np.logical_not(np.logical_xor(share1, share2)).astype(float)
-    return decode
+import tqdm
 
 class HVC_VAC():
     def __init__(self, secret, shape=None, kernel=None, max_iter=100000, verbose=1):
@@ -115,7 +60,6 @@ class HVC_VAC():
         timer = clock()
         timer.tick()
         flat_mask = np.arange(np.prod(self.secret.shape))
-        
         # Select white region
         W_1 = np.random.choice(flat_mask, size=self.w_size//2, replace=False, p=self.w_mask.flatten()/np.sum(self.w_mask))
         # W_0_p = self.w_mask.flatten()
@@ -145,6 +89,8 @@ class HVC_VAC():
         RP1[B_1] = 1
         RP2[B_1] = 0
         self.RPs = [np.reshape(RP1, self.secret.shape), np.reshape(RP2, self.secret.shape)]
+        cv2.imwrite('b.png', self.RPs[0]*255)
+        cv2.imwrite('c.png', self.RPs[1]*255)
         cv2.imwrite('d.png', decode_shares(self.RPs[0],self.RPs[1])*255)
         cluster_score_1 = self._get_score(self.RPs[0], 'cluster')
         cluster_score_2 = self._get_score(self.RPs[1], 'cluster')
@@ -194,7 +140,7 @@ class HVC_VAC():
         SPs = [self.RPs[0].copy(), self.RPs[1].copy()]
         timer.tick()
         
-        for i in range(self.max_iter):
+        for i in tqdm.tqdm(range(self.max_iter)):
             # Select RP to run on
             index = np.random.randint(2)
             region = None
@@ -227,6 +173,9 @@ class HVC_VAC():
             # Check termination
             if cluster_pos == void_pos: break
         self.SPs = SPs
+        cv2.imwrite('e.png', self.SPs[0]*255)
+        cv2.imwrite('f.png', self.SPs[1]*255)
+        cv2.imwrite('g.png', decode_shares(self.SPs[0],self.SPs[1])*255)
                 
         timer.tock()
         if self.verbose: print("INFO: Step 1 done, time: %.5fs" % timer.get_time())
@@ -237,6 +186,8 @@ class HVC_VAC():
         dither_matrix_1 = self.vac_operation_2(0)
         dither_matrix_2 = self.vac_operation_2(1)
         self.TAs = [dither_matrix_1, dither_matrix_2]
+        cv2.imwrite('h.png', self.TAs[0]*255)
+        cv2.imwrite('i.png', self.TAs[1]*255)
         timer.tock()
         if self.verbose: print("INFO: Step 2 done, time: %.5fs" % timer.get_time())
 
@@ -279,36 +230,3 @@ class HVC_VAC():
         halftone_img = np.zeros(image.shape)
         halftone_img[image > self.TAs[index]] = 1.0
         return halftone_img
-
-if __name__ == "__main__":
-    args = get_args()
-
-    # Load images
-    fingerprint = read_image(args.fingerprint, resize=args.shape, binary=True)
-    signature = read_image(args.signature, resize=args.shape)
-    messages = glob.glob(os.path.join(args.message, '*'))
-    messages = [read_image(p, resize=args.shape) for p in messages]
-    messages_num = len(messages)
-
-    # Run HVC-VAC
-    hvc_vac = HVC_VAC(fingerprint, shape=args.shape, verbose=args.verbose)
-    hvc_vac.run()
-
-    # Get halftoned images
-    ht_signature = hvc_vac.halftone(signature, 0, resample_range=args.resample_range)
-    ht_messages = [hvc_vac.halftone(m, 1, resample_range=args.resample_range) for m in messages]
-    ht_fingerprints = [decode_shares(ht_signature, m) for m in ht_messages]
-
-    # Save images
-    save_image(os.path.join(args.output, 'signature.png'), ht_signature)
-    [save_image(os.path.join(args.output, 'message_%d.png' % i), ht_messages[i]) for i in range(messages_num)]
-    [save_image(os.path.join(args.output, 'fingerprint_%d.png' % i), ht_fingerprints[i]) for i in range(messages_num)]
-
-    # Check if signatures are identical
-    signatures = [decode_shares(ht_messages[i], ht_fingerprints[i]) for i in range(messages_num)]
-    for i in range(messages_num-1):
-        for j in range(i+1, messages_num):
-            similarity = np.sum(signatures[i] == signatures[j]) / np.prod(args.shape) * 100
-            print("Same pixel value ratio of signature %d & %d: %.2f %%" % (i, j, similarity))
-
-# python HVC-VAC.py -f fingerprint.png -s signature.png -m messages -o outputs -sh 200 200 -r 0.35 0.65 -v 1
