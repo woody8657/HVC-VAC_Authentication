@@ -3,8 +3,8 @@ A halftone visual cryptography based on void-and-cluster dithering
 
 ## Description
 
+![](./figures/algorithm.jpg)
 ![](./figures/demo.gif)
-![](./figures/algorithm.gif)
 
 Here we implement the HVC-VAC algorithm proposed in [1]. We also proposed a authentication scheme based on the HVC-VAC algorithm. Check out the notebook for more details.
 
