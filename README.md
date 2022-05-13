@@ -10,7 +10,7 @@ Here we implement the HVC-VAC algorithm proposed in [1]. We also proposed a auth
 ## How to run
 
 ```
-python HVC-VAC.py [-h] -f FINGERPRINT -s SIGNATURE -m MESSAGE -o OUTPUT
+python main.py [-h] -f FINGERPRINT -s SIGNATURE -m MESSAGE -o OUTPUT
                   [-sh SHAPE SHAPE] [-r RESAMPLE_RANGE RESAMPLE_RANGE]
                   [-v VERBOSE]
     -f FINGERPRINT, --fingerprint FINGERPRINT
@@ -32,6 +32,9 @@ python HVC-VAC.py [-h] -f FINGERPRINT -s SIGNATURE -m MESSAGE -o OUTPUT
 
 examples
 ```
+# 
+sh RUN.sh
+
 # HVC-VAC algorithm
 python HVC-VAC.py -f ./HVC-VAC_test/inputs/secret_image.jpg -s ./HVC-VAC_test/inputs/cat.jpg -m ./HVC-VAC_test/inputs/dog -o ./HVC-VAC_test/outputs -sh 200 200 -r 0.20 0.80 -v 1
 
