@@ -19,18 +19,18 @@ def read_image(path, resize=None, binary=False):
     if resize: img = cv2.resize(img, (resize[1], resize[0]))
     img = img / 255.
     if binary:
-        # img[img > 0.5] = 1.0
-        # img[img <= 0.5] = 0.0
+        img[img > 0.5] = 1.0
+        img[img <= 0.5] = 0.0
         # std_dev = sigma(img, filter_size=9)
         # ref = np.zeros(std_dev.shape)
         # ref[np.abs(std_dev)<0.03] = 255
         # cv2.imwrite('ref.png', ref)
         
-        img = error_diffusion(img*255)
-        ref = np.ones(img.shape) * 255
-        img = median_filter(img, ref, filter_size=3)
+        # img = error_diffusion(img*255)
+        # ref = np.ones(img.shape) * 255
+        # img = median_filter(img, ref, filter_size=3)
         cv2.imwrite('halftone_secret.png', img*255)
-        raise
+        
     return img
 
 def save_image(path, img):

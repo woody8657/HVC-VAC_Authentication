@@ -39,12 +39,12 @@ def make_gif(share1, share2, file_name):
     gif[0].save(file_name, save_all=True, append_images=gif[1:], duration=20, loop=3)
 
 if __name__ == '__main__':
-    share1 = cv2.imread('/home/u/woody8657/projs/HVC-VAC_Authentication/coco_test/outputs/share1.png', cv2.IMREAD_GRAYSCALE)
-    share2 = cv2.imread('/home/u/woody8657/projs/HVC-VAC_Authentication/coco_test/outputs/share21.png', cv2.IMREAD_GRAYSCALE)
+    share1 = cv2.imread('/home/u/woody8657/projs/HVC-VAC_Authentication/coco_test/outputs_thresholding/share1.png', cv2.IMREAD_GRAYSCALE)
+    share2 = cv2.imread('/home/u/woody8657/projs/HVC-VAC_Authentication/coco_test/outputs_thresholding/share20.png', cv2.IMREAD_GRAYSCALE)
     share1 = share1/255
     share2 = share2/255
     # share1 = hvc_vac.halftone(share1, 0, resample_range=(0.35, 0.65))
     # image = image * np.abs(np.subtract(resample_range[1], resample_range[0])) + resample_range[0]
     # halftone_img = np.zeros(image.shape)
     # halftone_img[image > self.TAs[index]] = 1.0
-    make_gif(share1, share2, "./figures/demo2.gif")
+    make_gif(share1, share2, "./figures/demo_THRES_0.gif")

@@ -2,9 +2,10 @@
 A halftone visual cryptography based on void-and-cluster dithering
 
 ## Description
-
-![](./figures/demo1.gif)
-![](./figures/demo2.gif)
+### Halftoning fingerprint by thresholding
+![](./figures/demo_THRES_1.gif)
+### Halftoning fingerprint by error diffusion
+![](./figures/demo_ED_1.gif)
 ![](./figures/algorithm.jpg)
 
 Here we implement the HVC-VAC algorithm proposed in [1]. We also proposed a authentication scheme based on the HVC-VAC algorithm. Check out the notebook for more details.
