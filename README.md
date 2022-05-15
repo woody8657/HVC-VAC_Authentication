@@ -2,9 +2,9 @@
 A halftone visual cryptography based on void-and-cluster dithering
 
 ## Description
-### Halftoning fingerprint by thresholding
+### Halftoning secret image by thresholding:
 ![](./figures/demo_THRES_1.gif)
-### Halftoning fingerprint by error diffusion
+### Halftoning secret image by error diffusion:
 ![](./figures/demo_ED_1.gif)
 ![](./figures/algorithm.jpg)
 
