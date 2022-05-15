@@ -1,5 +1,6 @@
 import os
 import argparse
+import glob
 import numpy as np
 from HVC_VAC import HVC_VAC
 from utils import read_image, decode_shares, save_image
@@ -21,7 +22,8 @@ def whole_process(args):
     # Load images
     fingerprint = read_image(args.fingerprint, resize=args.shape, binary=True)
     signature = read_image(args.signature, resize=args.shape)
-    messages = [args.message]
+    # messages = [args.message]
+    messages = glob.glob(os.path.join(args.message, '*'))
     messages = [read_image(p, resize=args.shape) for p in messages]
     messages_num = len(messages)
 
